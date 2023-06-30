@@ -1,0 +1,17 @@
+__pycache__
+*.zip
+*.rar
+*.log
+*.bak
+*.onnx
+
+/movenet.pytorch/lib/__pycache__
+/movenet.pytorch/data/annotations
+/movenet.pytorch/data/acc_train
+/movenet.pytorch/data/acc_val
+/movenet.pytorch/data/loss_train
+/movenet.pytorch/output/predict
+/movenet.pytorch/data/loss_val
+/movenet.pytorch/data/test/imgs
+/movenet.pytorch/data/test/test.json
+
