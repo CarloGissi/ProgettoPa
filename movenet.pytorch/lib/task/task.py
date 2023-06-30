@@ -94,10 +94,10 @@ class Task():
                     y = int(pre[0][i*2+1]*h)
                     coordinate.append((x,y))
                     #print(coordinate)
-                    cv2.circle(img, (x, y), 3, (255,0,0), 2)
+                    cv2.circle(img, (x, y), 0, (255,0,0), 4)
 
                 #print(coordinate)
-                #cv2.imwrite(os.path.join(save_dir,basename), img)
+                cv2.imwrite(os.path.join(save_dir,basename), img)
                 
                 coordinate_totali.append(coordinate)
             #print(coordinate_totali)    
