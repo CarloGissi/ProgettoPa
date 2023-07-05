@@ -1,7 +1,7 @@
-import User from "../Model/user";
 import {Request, Response, NextFunction} from 'express'
 import Joi from 'joi'
 import {StatusCodes} from 'http-status-codes'
+import User from '../Model/user'
 
 
 const create = async(request:Request, response:Response, next:NextFunction)=>{
@@ -9,7 +9,7 @@ const create = async(request:Request, response:Response, next:NextFunction)=>{
         nome_utente: Joi.string().required(),
         email: Joi.string().required(),
         password: Joi.string().required(),
-        admin: Joi.boolean().required()
+        admin: Joi.boolean().optional()
             }
         )
     try{
@@ -17,7 +17,9 @@ const create = async(request:Request, response:Response, next:NextFunction)=>{
         const MODEL ={
             nome_utente: value.nome_utente,
             email: value.email,
-            password: value.password
+            password: value.password,
+            admin: value.admin
+
         }
         try{
          const USER = await User.create(MODEL)
