@@ -2,7 +2,7 @@ import {Request, Response, NextFunction} from 'express'
 import Joi from 'joi'
 import {StatusCodes} from 'http-status-codes'
 import User from '../Model/user'
-
+import prova from '../Factory/FactoryError'
 
 const create = async(request:Request, response:Response, next:NextFunction)=>{
     const userSchema = Joi.object({
@@ -23,8 +23,8 @@ const create = async(request:Request, response:Response, next:NextFunction)=>{
         }
         try{
          const USER = await User.create(MODEL)
-         console.log("Ciao")
          return response.status(StatusCodes.OK).json(USER)
+         //return response.json(prova.getErrore(200).stampaMex()) per stampare con i nostri errori
         }catch(error){
             return response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
         }
