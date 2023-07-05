@@ -4,13 +4,6 @@ import { DatabaseSingleton } from "../Singleton/databaseSingleton"
 const sequelize = DatabaseSingleton.getIstanza().getConnessione();
 
 const User = sequelize.define("users",{
-    id:{
-        type:Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-
-    },
     nome_utente:{
         type: Sequelize.STRING,
         allowNull: false,
