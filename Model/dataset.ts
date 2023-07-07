@@ -4,13 +4,17 @@ import { INTEGER } from "sequelize";
 
 const sequelize = DatabaseSingleton.getIstanza().getConnessione();
 
-const Dataset = sequelize.define("dataset",{
+const Dataset = sequelize.define("datasets",{
+    deletedAt:{
+        type: Sequelize.DATE,
+        allowNull: true,
+        defaultValue: null
+    },
     id:{
         type:Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false,
-
+        allowNull: false
     },
     nome:{
         type: Sequelize.STRING,
@@ -22,10 +26,12 @@ const Dataset = sequelize.define("dataset",{
         allowNull: false,
         defaultValue: 'hello'
     },
-    userID:{
+    uid:{
         type:INTEGER,
         allowNull: false
-    }
+    },
+}, {
+    paranoid:true
 })
 
 export default Dataset
