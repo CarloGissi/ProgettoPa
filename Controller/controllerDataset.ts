@@ -11,6 +11,12 @@ const schema_dataset = yup.object({
     uid: yup.number().typeError('Devi inserire un numero').required()    
 })
 
+const agg_schema_dataset = yup.object({
+    nome: yup.string().optional(),
+    tags: yup.string().optional(),
+    uid: yup.number().typeError('Devi inserire un numero').optional()    
+})
+
 //funzione che ritorno tutti i datasets
 const getAll = async (req:Request, res: Response, next:NextFunction ) => {
     try{
@@ -46,19 +52,56 @@ const new_dataset = async (req:Request, res: Response, next:NextFunction ) => {
     }  
 }
 
+const aggiorna_dataset = async(req: Request, res:Response)=>{
+    try{
+        const presente = await Dataset.findOne({where: {id: req.query.id}})
+        if(presente){
+            agg_schema_dataset.validate(req.body).catch(ValidationError=>{
+                return res.status(StatusCodes.BAD_REQUEST).json(ValidationError)
+             })
+             const valore = agg_schema_dataset.validate(req.body)
+             const modello_dataset = {
+                nome: (await valore).nome,
+                tags : (await valore).tags,
+                uid: (await valore).uid
+             }
+             const dataset_agg = Dataset.update(modello_dataset, {where: {id: req.query.id}})
+             return res.status(StatusCodes.OK).json('Dataset aggiornato')
+        }else{
+            return res.status(StatusCodes.NOT_FOUND).json('Dataset non presente')
+        }
+
+    }catch(error){
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+
+    }
+}
+
+const getById = async(id:number)=>{
+    const dataset = await Dataset.findByPk(id)
+    return dataset
+}
+
 const delete_dataset_by_id = async (req:Request, res: Response, next:NextFunction ) => {
     try{
-        const OLD_DATASET = await Dataset.destroy({where:{id: req.query.id}})
-        return res.status(StatusCodes.CREATED).json(OLD_DATASET)
+        const dataset = await Dataset.findOne({where: {id: req.query.id}})
+        if(dataset){
+            const OLD_DATASET = await Dataset.destroy({where:{id: req.query.id}})
+            return res.status(StatusCodes.CREATED).json(OLD_DATASET)
+        }else{
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json("Il dataset non è presente")
+        }
     }catch(error){
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
     }  
 }
 
+
 const allVariable={
     getAll,
     new_dataset,
-    delete_dataset_by_id
+    delete_dataset_by_id,
+    aggiorna_dataset
 }
 
 export default allVariable
