@@ -6,6 +6,10 @@ import jwt from 'jsonwebtoken'
 import * as dotenv from 'dotenv'
 import prova from '../Factory/FactoryError'
 
+let refreshTokens: any[] = []
+
+
+
 dotenv.config()
 
 const acces_schema = yup.object({
@@ -83,38 +87,11 @@ const login = async(req: Request, res:Response)=>{
     }
 
 }
-/*
-const login = async (request: Request, response: Response, next: NextFunction) => {
-    try {
-        // Trova l'utente nel database utilizzando il nome utente fornito nella richiesta
-        const USER = await User.findOne({ where: { username: request.body.username } })
-    
-        if (USER) {
-            // Confronta la password fornita nella richiesta con la password hashata dell'utente nel database
-            if (bcrypt.compareSync(request.body.password, USER?.getDataValue('password'))) {
-                // Genera un token di accesso utilizzando l'ID dell'utente e la chiave segreta
-                const token = jwt.sign({ id: USER?.get("uid") }, process.env.SECRET_KEY || "", { expiresIn: "1h" })
-                // Restituisci il token come risposta JSON con lo stato StatusCodes.OK
-                return response.status(StatusCodes.OK).json({ token })
-            } else {
-                // La password non corrisponde, restituisce un messaggio di errore con lo stato StatusCodes.UNAUTHORIZED
-                return response.status(StatusCodes.UNAUTHORIZED).json({ message: "Invalid credentials" })
-            }
-        } else {
-                // L'utente non esiste, restituiscr un messaggio di errore con lo stato StatusCodes.NOT_FOUND
-                return response.status(StatusCodes.NOT_FOUND).json({ message: "User not found" })
-        }
-    } catch (error) {
-        // Si è verificato un errore, restituisce una risposta di errore con lo stato StatusCodes.INTERNAL_SERVER_ERROR
-        return response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
-    }
-  }
-
-*/
 
 const usContr={
     new_user,
     getAll,
-    login
+    login,
+    getById
 }
 export default  usContr

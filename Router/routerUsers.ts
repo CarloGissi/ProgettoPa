@@ -1,5 +1,6 @@
 import express from 'express'
-import controller from '../Controller/controllerUser'   
+import controller from '../Controller/controllerUser'  
+import middlex from '../Middelware/middleuser' 
 
 const router = express.Router()
 
