@@ -3,8 +3,9 @@ import controller from '../Controller/controllerUser'
 
 const router = express.Router()
 
-router.post('/new', controller.create)
+router.post('/new', controller.new_user)
 router.get('/all', controller.getAll)
+router.post('/login',controller.login)
 
 
 //router.post('/nuovo',controller.new_user)
