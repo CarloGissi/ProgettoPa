@@ -1,11 +1,11 @@
-import contrData from '../Controller/controllerDataset'
+import controller from '../Controller/controllerDataset'
 import express from 'express'
 
 const router = express.Router()
 
-router.get('/all',contrData.getAll)
-      .post('/new',contrData.new_dataset)
-      .delete('/delete', contrData.delete_dataset_by_id)
-      .post('/update', contrData.aggiorna_dataset)
+router.get('/all',controller.getAll)
+      .post('/new',controller.newDataset)
+      .delete('/delete', controller.eliminaDatasetById)
+      .post('/update', controller.aggiornaDataset)
 
 export default router

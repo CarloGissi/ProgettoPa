@@ -5,22 +5,23 @@ import * as yup from 'yup'
 import { ValidationError } from "sequelize";
 
 //creazione dello schema per leggere il dataset dal json
-const schema_dataset = yup.object({
+const schemaDataset = yup.object({
     nome: yup.string().required(),
     tags: yup.string().required(),
     uid: yup.number().typeError('Devi inserire un numero').required()    
 })
 
-const agg_schema_dataset = yup.object({
+//creazione dello schema per poter leggere i dati da un json
+const aggSchemaDataset = yup.object({
     nome: yup.string().optional(),
     tags: yup.string().optional(),
     uid: yup.number().typeError('Devi inserire un numero').optional()    
 })
 
-//funzione che ritorno tutti i datasets
+//funzione che ritorno tutti i datasets dello stesso utente
 const getAll = async (req:Request, res: Response, next:NextFunction ) => {
     try{
-        const all = await Dataset.findAll() //{paranoid:false} per mostrare i record eliminati logicamente
+        const all = await Dataset.findAll({where: {uid: req.query.uid}}) //{paranoid:false} per mostrare i record eliminati logicamente
         return res.json(all) 
     }catch(error){
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -28,14 +29,14 @@ const getAll = async (req:Request, res: Response, next:NextFunction ) => {
 }
 
 //funzione per creare un nuovo dataset
-const new_dataset = async (req:Request, res: Response, next:NextFunction ) => {
+const newDataset = async (req:Request, res: Response, next:NextFunction ) => {
     try{
         //se lo schema non è rispettato parte l'eccezione della validazione
-        schema_dataset.validate(req.body).catch(ValidationError=>{
+        schemaDataset.validate(req.body).catch(ValidationError=>{
            return res.status(StatusCodes.BAD_REQUEST).json(ValidationError)
         })
         //creiamo una variabile per poter riprendere i valori della validazione
-        const valore = schema_dataset.validate(req.body)
+        const valore = schemaDataset.validate(req.body)
         const modello_dataset = {
             nome: (await valore).nome,
             tags : (await valore).tags,
@@ -52,14 +53,15 @@ const new_dataset = async (req:Request, res: Response, next:NextFunction ) => {
     }  
 }
 
-const aggiorna_dataset = async(req: Request, res:Response)=>{
+//funzione per aggioranre un ndataset in base all'id
+const aggiornaDataset = async(req: Request, res:Response)=>{
     try{
         const presente = await Dataset.findOne({where: {id: req.query.id}})
         if(presente){
-            agg_schema_dataset.validate(req.body).catch(ValidationError=>{
+            aggSchemaDataset.validate(req.body).catch(ValidationError=>{
                 return res.status(StatusCodes.BAD_REQUEST).json(ValidationError)
              })
-             const valore = agg_schema_dataset.validate(req.body)
+             const valore = aggSchemaDataset.validate(req.body)
              const modello_dataset = {
                 nome: (await valore).nome,
                 tags : (await valore).tags,
@@ -77,12 +79,14 @@ const aggiorna_dataset = async(req: Request, res:Response)=>{
     }
 }
 
+//funzione che ritorna un dataset in base all'id passato
 const getById = async(id:number)=>{
     const dataset = await Dataset.findByPk(id)
     return dataset
 }
 
-const delete_dataset_by_id = async (req:Request, res: Response, next:NextFunction ) => {
+//funzione che elimina un dataset in base all'id passato
+const eliminaDatasetById = async (req:Request, res: Response, next:NextFunction ) => {
     try{
         const dataset = await Dataset.findOne({where: {id: req.query.id}})
         if(dataset){
@@ -96,12 +100,12 @@ const delete_dataset_by_id = async (req:Request, res: Response, next:NextFunctio
     }  
 }
 
-
+//per esportazione
 const allVariable={
     getAll,
-    new_dataset,
-    delete_dataset_by_id,
-    aggiorna_dataset
+    newDataset,
+    eliminaDatasetById,
+    aggiornaDataset
 }
 
 export default allVariable

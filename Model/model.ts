@@ -4,7 +4,7 @@ import { INTEGER } from "sequelize";
 
 const sequelize = DatabaseSingleton.getIstanza().getConnessione();
 
-const Model = sequelize.define("model",{
+const Model = sequelize.define("models",{
     id:{
         type:Sequelize.INTEGER,
         primaryKey: true,
@@ -17,11 +17,11 @@ const Model = sequelize.define("model",{
         allowNull: false,
         unique: true
     },
-    datasetID:{
+    datasetid:{
         type: Sequelize.INTEGER,
         allowNull: false
     },
-    userID:{
+    userid:{
         type:INTEGER,
         allowNull: false
     }
