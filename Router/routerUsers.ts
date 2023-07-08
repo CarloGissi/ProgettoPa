@@ -4,11 +4,14 @@ import middlex from '../Middelware/middleuser'
 
 const router = express.Router()
 
-router.post('/new', controller.newUser)
-router.get('/all', controller.getAll)
+
 router.post('/login',controller.login)
-router.delete('/delete', controller.eliminaUserById)
-router.post('/update', controller.aggiornaUtente)
+router.post('/new', controller.newUser)
+router.get('/all',middlex.controllo_token, middlex.controllo_admin, controller.getAll)
+router.delete('/delete',middlex.isProprietario, controller.eliminaUserById)
+router.put('/update',middlex.isProprietario, controller.aggiornaUtente)
+router.post('/creditoresiduo', controller.ottieniCredito)
+router.post('/ricaricacredito', controller.ricaricaCredito)
 
 
 //router.post('/nuovo',controller.new_user)

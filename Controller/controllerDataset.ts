@@ -2,7 +2,8 @@ import { Response, Request, NextFunction } from "express";
 import Dataset  from "../Model/dataset";
 import { StatusCodes } from "http-status-codes";
 import * as yup from 'yup'
-import { ValidationError } from "sequelize";
+import * as fs from 'fs';
+import * as path from 'path';
 
 //creazione dello schema per leggere il dataset dal json
 const schemaDataset = yup.object({
@@ -21,7 +22,7 @@ const aggSchemaDataset = yup.object({
 //funzione che ritorno tutti i datasets dello stesso utente
 const getAll = async (req:Request, res: Response, next:NextFunction ) => {
     try{
-        const all = await Dataset.findAll({where: {uid: req.query.uid}}) //{paranoid:false} per mostrare i record eliminati logicamente
+        const all = await Dataset.findAll() //{where: {uid: req.query.uid}}//{paranoid:false} per mostrare i record eliminati logicamente
         return res.json(all) 
     }catch(error){
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -32,9 +33,8 @@ const getAll = async (req:Request, res: Response, next:NextFunction ) => {
 const newDataset = async (req:Request, res: Response, next:NextFunction ) => {
     try{
         //se lo schema non è rispettato parte l'eccezione della validazione
-        schemaDataset.validate(req.body).catch(ValidationError=>{
-           return res.status(StatusCodes.BAD_REQUEST).json(ValidationError)
-        })
+        if (!req.body || Object.keys(req.body).length === 0 || Object.keys(req.body).length === 1 || Object.keys(req.body).length === 2) {
+            return res.status(400).json({ error: 'Il body della richiesta è vuoto.' })}
         //creiamo una variabile per poter riprendere i valori della validazione
         const valore = schemaDataset.validate(req.body)
         const modello_dataset = {
@@ -53,22 +53,24 @@ const newDataset = async (req:Request, res: Response, next:NextFunction ) => {
     }  
 }
 
+
 //funzione per aggioranre un ndataset in base all'id
 const aggiornaDataset = async(req: Request, res:Response)=>{
     try{
         const presente = await Dataset.findOne({where: {id: req.query.id}})
         if(presente){
-            aggSchemaDataset.validate(req.body).catch(ValidationError=>{
-                return res.status(StatusCodes.BAD_REQUEST).json(ValidationError)
-             })
-             const valore = aggSchemaDataset.validate(req.body)
-             const modello_dataset = {
-                nome: (await valore).nome,
-                tags : (await valore).tags,
-                uid: (await valore).uid
-             }
-             const dataset_agg = Dataset.update(modello_dataset, {where: {id: req.query.id}})
-             return res.status(StatusCodes.OK).json('Dataset aggiornato')
+            if (!req.body || Object.keys(req.body).length === 0) {
+                return res.status(400).json({ error: 'Il body della richiesta è vuoto.' })}
+                else{
+                    const valore = aggSchemaDataset.validate(req.body)
+                    const modello_dataset = {
+                        nome: (await valore).nome,
+                        tags : (await valore).tags,
+                        uid: (await valore).uid
+                }
+                const dataset_agg = await Dataset.update(modello_dataset, {where: {id: req.query.id}})
+                return res.status(StatusCodes.OK).json('Dataset aggiornato')
+                }
         }else{
             return res.status(StatusCodes.NOT_FOUND).json('Dataset non presente')
         }
@@ -100,12 +102,21 @@ const eliminaDatasetById = async (req:Request, res: Response, next:NextFunction 
     }  
 }
 
+const carica_immagine =async (res:Response, req:Request) => {
+    try{
+                
+    }catch(error){
+
+    }
+}
+
 //per esportazione
 const allVariable={
     getAll,
     newDataset,
     eliminaDatasetById,
-    aggiornaDataset
+    aggiornaDataset,
+    getById
 }
 
 export default allVariable

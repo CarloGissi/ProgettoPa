@@ -21,7 +21,7 @@ const aggSchemaModel = yup.object({
 //funzione che ritorno tutti i modelli in base all'id di un utente
 const getAll = async (req:Request, res: Response, next:NextFunction ) => {
     try{
-        const all = await Model.findAll({where:{userid: req.query.userid}}) //{paranoid:false} per mostrare i record eliminati logicamente
+        const all = await Model.findAll() //{where:{userid: req.query.userid}}//{paranoid:false} per mostrare i record eliminati logicamente
         return res.json(all) 
     }catch(error){
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -32,22 +32,23 @@ const getAll = async (req:Request, res: Response, next:NextFunction ) => {
 const newModel = async (req:Request, res: Response, next:NextFunction ) => {
     try{
         //se lo schema non è rispettato parte l'eccezione della validazione
-        schemaModel.validate(req.body).catch(ValidationError=>{
-           return res.status(StatusCodes.BAD_REQUEST).json(ValidationError)
-        })
-        //creiamo una variabile per poter riprendere i valori della validazione
-        const valore = schemaModel.validate(req.body)
-        const modelloModel = {
-            nome: (await valore).nome,
-            datasetid : (await valore).datasetid,
-            userid: (await valore).userid
-         }
-         try{
-            const newModel = await Model.create(modelloModel)
-            return res.status(StatusCodes.CREATED).json(newModel)
-         }catch(error){
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
-         }
+        if (!req.body || Object.keys(req.body).length === 0 || Object.keys(req.body).length === 1 || Object.keys(req.body).length === 2) {
+            return res.status(400).json({ error: 'Il body della richiesta è vuoto.' })}
+        else{
+            //creiamo una variabile per poter riprendere i valori della validazione
+            const valore = schemaModel.validate(req.body)
+            const modelloModel = {
+                nome: (await valore).nome,
+                datasetid : (await valore).datasetid,
+                userid: (await valore).userid
+            }
+            try{
+                const newModel = await Model.create(modelloModel)
+                return res.status(StatusCodes.CREATED).json(newModel)
+            }catch(error){
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+            }
+        }
     }catch(error){
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
     }  
@@ -57,17 +58,18 @@ const aggiornaModello = async(req: Request, res:Response)=>{
     try{
         const presente = await Model.findOne({where: {id: req.query.id}})
         if(presente){
-            aggSchemaModel.validate(req.body).catch(ValidationError=>{
-                return res.status(StatusCodes.BAD_REQUEST).json(ValidationError)
-             })
-             const valore = aggSchemaModel.validate(req.body)
-             const modello_model = {
-                nome: (await valore).nome,
-                datsetid : (await valore).datasetid,
-                userid: (await valore).userid
-             }
-             const model_agg = Model.update(modello_model, {where: {id: req.query.id}})
-             return res.status(StatusCodes.OK).json('Modello aggiornato')
+            if (!req.body || Object.keys(req.body).length === 0) {
+                return res.status(400).json({ error: 'Il body della richiesta è vuoto.' })}
+                else{
+                    const valore = aggSchemaModel.validate(req.body)
+                    const modello_model = {
+                        nome: (await valore).nome,
+                        datsetid : (await valore).datasetid,
+                        userid: (await valore).userid
+                    }
+                    const model_agg = await Model.update(modello_model, {where: {id: req.query.id}})
+                    return res.status(StatusCodes.OK).json('Modello aggiornato')   
+                        }
         }else{
             return res.status(StatusCodes.NOT_FOUND).json('Modello non presente')
         }
@@ -104,7 +106,8 @@ const allVariable={
     getAll,
     newModel,
     eliminaModelloById,
-    aggiornaModello
+    aggiornaModello,
+    getById
 }
 
 export default allVariable
