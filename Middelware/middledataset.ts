@@ -3,7 +3,7 @@ import {Request, Response, NextFunction} from 'express'
 import {StatusCodes} from 'http-status-codes'
 import allVariable from '../Controller/controllerDataset'
 
-const controllo_token = async (req: any, res: Response, next: NextFunction) => {
+const controllo_token = async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     if (token == null){
@@ -13,6 +13,8 @@ const controllo_token = async (req: any, res: Response, next: NextFunction) => {
         if (err){
             return res.sendStatus(403);  
         }else{
+            const check : any = jwt.verify(token, process.env.KEY as string || "ciao");
+            (req as any).params.uid = check.id
             next();
         } 
         });
@@ -26,7 +28,7 @@ const isProprietario = async (req: Request, res: Response, next: NextFunction) =
         if (!dataset) {
             return res.status(StatusCodes.NOT_FOUND).json({ message: 'Dataset non trovato.' })
         }
-        const userID = (req as any).body.uid
+        const userID = (req as any).params.uid
         if ((dataset as any).uid == userID) {
             next()
         } else {

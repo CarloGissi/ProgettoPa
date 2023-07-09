@@ -14,8 +14,7 @@ const schemaModel = yup.object({
 //creazione dello schema per leggere le modifiche da fare su modello
 const aggSchemaModel = yup.object({
     nome: yup.string().optional(),
-    datasetid: yup.number().typeError('Devi inserire un numero').optional(),
-    userid: yup.number().typeError('Devi inserire un numero').optional()      
+    datasetid: yup.number().typeError('Devi inserire un numero').optional()     
 })
 
 //funzione che ritorno tutti i modelli in base all'id di un utente
@@ -64,8 +63,7 @@ const aggiornaModello = async(req: Request, res:Response)=>{
                     const valore = aggSchemaModel.validate(req.body)
                     const modello_model = {
                         nome: (await valore).nome,
-                        datsetid : (await valore).datasetid,
-                        userid: (await valore).userid
+                        datsetid : (await valore).datasetid
                     }
                     const model_agg = await Model.update(modello_model, {where: {id: req.query.id}})
                     return res.status(StatusCodes.OK).json('Modello aggiornato')   

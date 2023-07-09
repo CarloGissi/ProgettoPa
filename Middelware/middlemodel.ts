@@ -13,6 +13,8 @@ const controllo_token = async (req: any, res: Response, next: NextFunction) => {
         if (err){
             return res.sendStatus(403);  
         }else{
+            const check : any = jwt.verify(token, process.env.KEY as string || "ciao");
+            (req as any).params.userid = check.id
             next();
         } 
         });
@@ -26,8 +28,8 @@ const isProprietario = async (req: Request, res: Response, next: NextFunction) =
         if (!modello) {
             return res.status(StatusCodes.NOT_FOUND).json({ message: 'Modello non trovato.' })
         }
-        const userID = (req as any).body.uid
-        if ((modello as any).userID == userID) {
+        const userID = (req as any).params.userid
+        if ((modello as any).userid == userID) {
             next()
         } else {
             res.status(StatusCodes.FORBIDDEN).json({

@@ -13,6 +13,8 @@ const controllo_token = async (req: any, res: Response, next: NextFunction) => {
         if (err){
             return res.sendStatus(403);  
         }else{
+            const check : any = jwt.verify(token, process.env.KEY as string || "ciao");
+            (req as any).params.id = check.id
             next();
         } 
         });
@@ -23,7 +25,7 @@ const controllo_token = async (req: any, res: Response, next: NextFunction) => {
 
 
 const controllo_admin = async (request: Request, response: Response, next: NextFunction) => {
-    const USER = await controllerUser.getById(parseInt((request as any).query.id))
+    const USER = await controllerUser.getById(parseInt((request as any).params.id))
     if (USER?.get("admin") === true) {
         next()
     } else {
@@ -40,7 +42,7 @@ const isProprietario = async (req: Request, res: Response, next: NextFunction) =
         if (!user) {
             return res.status(StatusCodes.NOT_FOUND).json({ message: 'Utente non trovato.' })
         }
-        const userID = (req as any).body.id
+        const userID = (req as any).params.id
         if ((user as any).id == userID) {
             next()
         } else {

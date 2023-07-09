@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.get('/all',controller.getAll)
       .post('/new',controller.newDataset)
-      .delete('/delete', controller.eliminaDatasetById)
+      .delete('/delete', middlex.controllo_token, middlex.isProprietario,controller.eliminaDatasetById)
       .put('/update', middlex.controllo_token, middlex.isProprietario, controller.aggiornaDataset)
 
 export default router

@@ -95,8 +95,10 @@ const login = async(req: Request, res:Response)=>{
                     const token = jwt.sign({id: us?.get("id") }, process.env.KEY || 'ciao', { expiresIn: "1h" })
                     return res.json(token)
                 }else{
-                    res.status(StatusCodes.UNAUTHORIZED).json()
+                    res.status(StatusCodes.UNAUTHORIZED).json("Password errata")
                 }
+            }else{
+                res.status(StatusCodes.NOT_FOUND).json("Utente non presente")
             }
         }        
     }catch(error){
@@ -150,17 +152,12 @@ const eliminaUserById = async (req:Request, res: Response, next:NextFunction ) =
 //funzione che controlla il credito di un utente in base al suo nome utente
 const ottieniCredito =async (req: Request, res:Response, next:NextFunction) => {
     try{
-        if (!req.body || Object.keys(req.body).length === 0) {
-            return res.status(400).json({ error: 'Il body della richiesta è vuoto.' })}
-        else{
-            const valore = creditoSchema.validate(req.body)
-            const us = await User.findOne({where:{nome_utente: (await valore).nome_utente}})
-            if(us){
-                const credito_residuo = us.getDataValue('credito')
-                return res.status(StatusCodes.OK).json(credito_residuo)
-            }else{
-                return res.json("L'utente non esiste")
-            }
+        const us = await User.findOne({where:{id: (req as any).params.id}})
+        if(us){
+            const credito_residuo = us.getDataValue('credito')
+            return res.status(StatusCodes.OK).json(credito_residuo)
+        }else{
+            return res.json("L'utente non esiste")
         }
     }catch(error){
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
@@ -181,7 +178,6 @@ const ricaricaCredito = async(req:Request, res:Response)=>{
                 if(credito_residuo===1000){
                     return res.json("Il credito è massimo")
                 }else{
-                    const nuovo_credito = (await valore).credito
                     const somma = nuovo_credito + credito_residuo
                     if(somma >1000){
                         return res.json("Il credito inserito supera il limite")

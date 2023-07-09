@@ -7,11 +7,13 @@ const router = express.Router()
 
 router.post('/login',controller.login)
 router.post('/new', controller.newUser)
-router.get('/all',middlex.controllo_token, middlex.controllo_admin, controller.getAll)
-router.delete('/delete',middlex.isProprietario, controller.eliminaUserById)
-router.put('/update',middlex.isProprietario, controller.aggiornaUtente)
-router.post('/creditoresiduo', controller.ottieniCredito)
-router.post('/ricaricacredito', controller.ricaricaCredito)
+router.get('/all', controller.getAll)
+router.delete('/delete',middlex.controllo_token,middlex.isProprietario, controller.eliminaUserById)
+router.put('/update',middlex.controllo_token,middlex.isProprietario, controller.aggiornaUtente)
+
+
+router.get('/creditoresiduo', middlex.controllo_token, middlex.isProprietario,controller.ottieniCredito)
+router.post('/ricaricacredito', middlex.controllo_token, middlex.controllo_admin, controller.ricaricaCredito)
 
 
 //router.post('/nuovo',controller.new_user)

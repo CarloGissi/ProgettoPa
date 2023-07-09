@@ -15,8 +15,7 @@ const schemaDataset = yup.object({
 //creazione dello schema per poter leggere i dati da un json
 const aggSchemaDataset = yup.object({
     nome: yup.string().optional(),
-    tags: yup.string().optional(),
-    uid: yup.number().typeError('Devi inserire un numero').optional()    
+    tags: yup.string().optional()  
 })
 
 //funzione che ritorno tutti i datasets dello stesso utente
@@ -65,8 +64,7 @@ const aggiornaDataset = async(req: Request, res:Response)=>{
                     const valore = aggSchemaDataset.validate(req.body)
                     const modello_dataset = {
                         nome: (await valore).nome,
-                        tags : (await valore).tags,
-                        uid: (await valore).uid
+                        tags : (await valore).tags
                 }
                 const dataset_agg = await Dataset.update(modello_dataset, {where: {id: req.query.id}})
                 return res.status(StatusCodes.OK).json('Dataset aggiornato')
