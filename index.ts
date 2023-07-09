@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import user from './Router/routerUsers';
 import dataset from './Router/routerDataset'
+import model from './Router/routerModel'
 import {DatabaseSingleton}  from './Singleton/databaseSingleton';
 //import sequelize from './utils/database'
 
@@ -27,6 +28,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/user', user)
 app.use('/dataset', dataset);
+app.use('/model', model);
 
 
 (async()=>{
