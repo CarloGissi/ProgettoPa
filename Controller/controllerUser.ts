@@ -14,7 +14,7 @@ const accesSchema = yup.object({
 //creato schema per fare l'accesso
 const creditoSchemaRicarica = yup.object({
     email: yup.string().required(),
-    credito: yup.number().integer().positive().max(1000).required(),
+    credito: yup.number().min(0).max(1000).required(),
     })
 //schema utile per aggiungere un nuovo utente
 const userSchema = yup.object({
