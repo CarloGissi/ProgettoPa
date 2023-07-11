@@ -3,7 +3,7 @@ import Dataset  from "../Model/dataset";
 import { StatusCodes } from "http-status-codes";
 import * as yup from 'yup'
 import multer, {MulterError} from 'multer'
-import controllerUser from '../Controller/controllerUser'
+import controllerUser from './controllerUser'
 import * as fs from 'fs'
 import ffmpeg from 'fluent-ffmpeg'
 import { ffprobe } from "fluent-ffmpeg";
