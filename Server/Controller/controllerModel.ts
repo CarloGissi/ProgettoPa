@@ -1,8 +1,12 @@
 import { Response, Request, NextFunction } from "express";
 import Model  from "../Model/model";
+import contrDataset  from "../Controller/controllerDataset";
+import contrUser from "../Controller/controllerUser"
 import { StatusCodes } from "http-status-codes";
 import * as yup from 'yup'
 import { ValidationError } from "sequelize";
+import axios from 'axios'
+import { STATUS_CODES } from "http";
 
 //creazione dello schema per leggere il modello dal json
 const schemaModel = yup.object({
@@ -99,13 +103,75 @@ const eliminaModelloById = async (req:Request, res: Response, next:NextFunction 
     }  
 }
 
+//funzione che avvia un'inferennza e ottiene l'id del task come risposta
+const inferenza = async(req:Request, res: Response, next:NextFunction )=>{
+    try{
+        const user = await contrUser.getById((req.params as any).userid)
+       if(user?.getDataValue('credito') >= 3){
+        const modello = await getById((req.query as any).id)
+        const idmodello = await modello?.getDataValue('id')
+        if(req.params.userid === await modello?.getDataValue('userid')){
+            const dataset = await contrDataset.getById((req.query as any).did)
+            const iddataset = await dataset?.getDataValue('id')
+            if(iddataset === await modello?.getDataValue('datasetid')){
+                const valore = await axios.get("http://localhost:5000/inferenza/"+iddataset+"/"+idmodello, {params: {}})
+                 await rimuvoiCredito((req.params as any).userid,1)
+                return res.status(StatusCodes.OK).json({id: valore.data.job_id}) 
+            }else{
+                return res.status(StatusCodes.BAD_REQUEST).json('Id del dataset errato, non corrisponde con quello del modello')
+            }
+       }else{
+        return res.status(StatusCodes.UNAUTHORIZED).json('Il tuo d non corrisponde con quello presente nel modello')
+       }
+        }else{
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json('Credito insufficiente')
+        }
+    }catch(error){
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+    }
+}
+//funzione per ottenere lo stato
+const ottieniStato = async(req:Request, res:Response, next:NextFunction)=>{
+    try{
+        const job = req.params.job
+        const valore = await axios.get("http://localhost:5000/job-status/"+job.toString(), {params: {}})
+        return res.status(StatusCodes.OK).json({id: job, stato: valore.data.status})
+    }catch(error){
+
+    }
+}
+
+
+//funzione per ottenere il risultato
+const ottieniRisultato = async(req:Request, res:Response, next:NextFunction)=>{
+    try{
+        const job = req.params.job
+        const valore = await axios.get("http://localhost:5000/job-status/"+job.toString(), {params: {}})
+        return res.status(StatusCodes.OK).json({id: job, risultato: valore.data.result})
+    }catch(error){
+
+    }
+}
+
+const rimuvoiCredito = async(id: number, numeroFile: number)=>{
+    const user = await contrUser.getById(id) as any
+    const credito_residuo = user?.getDataValue('credito');
+    const costo = 3*numeroFile
+    const nuovo_credito = credito_residuo-costo
+    await user.update({credito: nuovo_credito})
+}
+  
+
 //per esportazione
 const allVariable={
     getAll,
     newModel,
     eliminaModelloById,
     aggiornaModello,
-    getById
+    getById,
+    inferenza, 
+    ottieniStato, 
+    ottieniRisultato
 }
 
 export default allVariable

@@ -14,10 +14,10 @@ from lib.utils.utils import setRandomSeed, printDash
 
 def init(cfg):
 
-    if cfg["cfg_verbose"]:
-        printDash()
-        print(cfg)
-        printDash()
+    #if cfg["cfg_verbose"]:
+        #printDash()
+        #print(cfg)
+        #printDash()
 
 
 

@@ -264,7 +264,7 @@ const caricaVideo = async (req:Request, res:Response) => {
                         folder: cartella_frame
                     })
                     //rimuoviamo i crediti in base ai frame che abbiamo
-                    rimuvoiCredito((req.params as any).uid,20)
+                    await rimuvoiCredito((req.params as any).uid,20)
                     return res.status(StatusCodes.OK).json("Il file è stato caricato");
 
                 }
@@ -291,7 +291,8 @@ const allVariable={
     aggiornaDataset,
     getById,
     caricaImmagine,
-    caricaVideo
+    caricaVideo, 
+    rimuvoiCredito
 }
 
 export default allVariable
