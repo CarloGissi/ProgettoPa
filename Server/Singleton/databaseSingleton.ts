@@ -5,10 +5,10 @@ export class DatabaseSingleton{
     private connessione: Sequelize;
 
     private constructor(){
-        const nome_db: string = process.env.PGDATABASE || "admin"
-        const username: string = process.env.PGUSER || "carlo"  
-        const password: string = process.env.PGPASSWORD || "Carlo"
-        const host: string = process.env.PGHOST || "localhost"  
+        const nome_db: string = process.env.PGDATABASE || ""
+        const username: string = process.env.PGUSER || ""  
+        const password: string = process.env.PGPASSWORD || ""
+        const host: string = process.env.PGHOST || ""  
         this.connessione = new Sequelize(nome_db, username, password,{
             host: host,
             dialect: 'postgres'

@@ -45,6 +45,6 @@ app.use('/model', model);
     
     });
   }catch(error){
-
+    console.log(error)
   }
 })()

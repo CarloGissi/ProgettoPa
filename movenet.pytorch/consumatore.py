@@ -4,7 +4,7 @@ import subprocess
 from predict import main
 from config import cfg
 
-app = Celery('app', broker='amqp://guest:guest@localhost//', backend='rpc://')
+app = Celery('app', broker='amqp://guest:guest@rabbitmq:5672//', backend='rpc://')
 
 @app.task(name='app.inferenza')
 def inferenza(dataset, modello):

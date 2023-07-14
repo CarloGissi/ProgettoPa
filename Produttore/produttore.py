@@ -4,7 +4,7 @@ from flask import Flask
 from flask import jsonify
 
 # Crea un'istanza di Celery e specifica il broker RabbitMQ
-app = Celery('app', broker='amqp://guest:guest@localhost//', backend='rpc://')
+app = Celery('app', broker='amqp://guest:guest@rabbitmq:5672//', backend='rpc://')
 
 flask = Flask(__name__)
 
@@ -43,4 +43,4 @@ def get_job_status(job_id):
     return jsonify(response)
 
 if __name__ == '__main__':
-    flask.run()
+    flask.run(host="0.0.0.0",port = 5000)

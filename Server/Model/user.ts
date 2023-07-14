@@ -32,7 +32,7 @@ const User = sequelize.define("users",{
     credito:{
         type: Sequelize.FLOAT,
         allowNull: false,
-        defaultValue: process.env.CREDITS || 1000
+        defaultValue: process.env.CREDITS || 10
     }
 })
 

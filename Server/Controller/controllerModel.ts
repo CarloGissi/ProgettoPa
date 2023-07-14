@@ -114,7 +114,7 @@ const inferenza = async(req:Request, res: Response, next:NextFunction )=>{
             const dataset = await contrDataset.getById((req.query as any).did)
             const iddataset = await dataset?.getDataValue('id')
             if(iddataset === await modello?.getDataValue('datasetid')){
-                const valore = await axios.get("http://localhost:5000/inferenza/"+iddataset+"/"+idmodello, {params: {}})
+                const valore = await axios.get("http://produttore:5000/inferenza/"+iddataset+"/"+idmodello, {params: {}})
                  await rimuvoiCredito((req.params as any).userid,1)
                 return res.status(StatusCodes.OK).json({id: valore.data.job_id}) 
             }else{
@@ -134,7 +134,7 @@ const inferenza = async(req:Request, res: Response, next:NextFunction )=>{
 const ottieniStato = async(req:Request, res:Response, next:NextFunction)=>{
     try{
         const job = req.params.job
-        const valore = await axios.get("http://localhost:5000/job-status/"+job.toString(), {params: {}})
+        const valore = await axios.get("http://produttore:5000/job-status/"+job.toString(), {params: {}})
         return res.status(StatusCodes.OK).json({id: job, stato: valore.data.status})
     }catch(error){
 
@@ -146,7 +146,7 @@ const ottieniStato = async(req:Request, res:Response, next:NextFunction)=>{
 const ottieniRisultato = async(req:Request, res:Response, next:NextFunction)=>{
     try{
         const job = req.params.job
-        const valore = await axios.get("http://localhost:5000/job-status/"+job.toString(), {params: {}})
+        const valore = await axios.get("http://produttore:5000/job-status/"+job.toString(), {params: {}})
         return res.status(StatusCodes.OK).json({id: job, risultato: valore.data.result})
     }catch(error){
 

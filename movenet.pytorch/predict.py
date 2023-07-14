@@ -4,9 +4,7 @@ https://github.com/fire717
 """
 import os
 import random
-import pandas as pd   
-import json
-from flask import jsonify
+import pandas as pd 
 
 from lib import init, Data, MoveNet, Task
 from multiprocessing import Process

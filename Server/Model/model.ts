@@ -14,8 +14,7 @@ const Model = sequelize.define("models",{
     },
     nome:{
         type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
+        allowNull: false
     },
     datasetid:{
         type: Sequelize.INTEGER,
