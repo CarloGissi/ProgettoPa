@@ -54,3 +54,5 @@ services:
       - PGPASSWORD=password
     depends_on:
       - postgres
+    volumes:
+      - ./movenet.pytorch/data:/src/data

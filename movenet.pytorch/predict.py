@@ -29,7 +29,7 @@ def main(cfg):
     
     
     data = Data(cfg)
-    test_loader = data.getTestDataloader()
+    test_loader = data.getCostumTestDataloader("./data/images/img_1_1")
 
 
     run_task = Task(cfg, model)

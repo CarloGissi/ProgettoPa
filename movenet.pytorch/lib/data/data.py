@@ -174,6 +174,13 @@ class Data():
                                     data_names,
                                     self.cfg)
         return test_loader
+    
+    def getCostumTestDataloader(self, path):
+        data_names = getFileNames(path)
+        test_loader = getDataLoader("test", 
+                                    data_names,
+                                    self.cfg)
+        return test_loader
 
 
     def showData(self, data_loader, show_num = 400):

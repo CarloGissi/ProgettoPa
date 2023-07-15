@@ -10,5 +10,6 @@ RUN  apt-get update -y
 RUN apt-get -y upgrade
 RUN apt-get install -y ffmpeg
 RUN npm install
+RUN mkdir /src/data
 
 CMD ["node", "index.js"]
