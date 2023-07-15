@@ -55,14 +55,22 @@ const isProprietario = async (req: Request, res: Response, next: NextFunction) =
     }
 }
 
-// Controllo dei crediti di un'utente per l'inferenza
+// Controllo dei crediti di un'utente  per il caricamento dei files
 const controllo_crediti = async (request: Request, response: Response, next: NextFunction) => {
-    const crediti = await controllerUser.ottieniCretitoByID((request as any).id)
-    if (crediti >= 3){
-        next()
-    } else {
-        response.status(StatusCodes.UNAUTHORIZED).send({ message: 'Crediti non sufficienti.' })
-    } 
+    const crediti = await controllerUser.ottieniCreditoByID((request.params as any).uid)
+    if((request.query as any).tipo === 0){
+        if (crediti >=11.0){
+            next()
+        } else {
+            response.status(StatusCodes.UNAUTHORIZED).send({ message: 'Crediti non sufficienti.' })
+        } 
+    }else if((request.query as any).tipo === 1){
+        if (crediti >= (0.05*20)){
+            next()
+        } else {
+            response.status(StatusCodes.UNAUTHORIZED).send({ message: 'Crediti non sufficienti.' })
+        } 
+    }
 }
 
 const middlex = {

@@ -190,7 +190,7 @@ const ricaricaCredito = async(req:Request, res:Response)=>{
     }
 }
 
-const ottieniCretitoByID = async(id: number)=>{
+const ottieniCreditoByID = async(id: number)=>{
     const user = await User.findByPk(id)
     const credito = user?.getDataValue('credito')
     return credito
@@ -206,6 +206,6 @@ const usContr={
     eliminaUserById,
     ottieniCredito,
     ricaricaCredito,
-    ottieniCretitoByID
+    ottieniCreditoByID
 }
 export default  usContr

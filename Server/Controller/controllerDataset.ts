@@ -148,7 +148,6 @@ const caricaImmagine = async (req:Request, res:Response) => {
             })
         }
         //verifichiamo il credito dell'utente che ha effettuato l'accesso ed è proprietario del dataset
-        if(await verificaCredito((req.params as any).uid, 1)){
             const storageEngine = multer.diskStorage({
                 destination:(req, file, callback)=>{
                     callback(null, cartella_dataset)
@@ -184,9 +183,6 @@ const caricaImmagine = async (req:Request, res:Response) => {
                 return res.status(StatusCodes.OK).json('il file è stato caricato')}
             
         })
-    }else{
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Credito insufficiente"})
-    }
     }catch(error){
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
     }

@@ -1,6 +1,7 @@
 import controller from '../Controller/controllerDataset'
 import express from 'express'
 import middlex from '../Middelware/middledataset'
+import middlexUser from '../Middelware/middleuser'
 
 const router = express.Router()
 
