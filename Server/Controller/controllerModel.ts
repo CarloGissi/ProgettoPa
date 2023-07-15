@@ -106,9 +106,25 @@ const eliminaModelloById = async (req:Request, res: Response, next:NextFunction 
 //funzione che avvia un'inferennza e ottiene l'id del task come risposta
 const inferenza = async(req:Request, res: Response, next:NextFunction )=>{
     try{
-        const valore = await axios.get("http://produttore:5000/inferenza/"+1+"/"+1, {params: {}})
-        //await rimuvoiCredito((req.params as any).userid,1)
-        return res.status(StatusCodes.OK).json({id: valore.data.job_id}) 
+        if((req.query as any).tipo==0){
+            if(await contrDataset.verificaCredito((req.params as any).userid, 1)){
+                const valore = await axios.get("http://produttore:5000/inferenza/"+1+"/"+1, {params: {}})
+                await rimuvoiCredito((req.params as any).userid,1)
+                return res.status(StatusCodes.OK).json({id: valore.data.job_id})
+            }else{
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Credito insufficiente"})
+            }
+        }else if((req.query as any).tipo==1){
+            if(await contrDataset.verificaCredito((req.params as any).userid, 20)){
+                const valore = await axios.get("http://produttore:5000/inferenza/"+1+"/"+1, {params: {}})
+                await rimuvoiCredito((req.params as any).userid,1)
+                return res.status(StatusCodes.OK).json({id: valore.data.job_id})
+            }else{
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Credito insufficiente"})
+            }
+        }else {
+            return res.status(StatusCodes.BAD_REQUEST).json({error: "Inserisci il tipo"})
+        }
     }catch(error){
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
     }
@@ -139,9 +155,15 @@ const ottieniRisultato = async(req:Request, res:Response, next:NextFunction)=>{
 const rimuvoiCredito = async(id: number, numeroFile: number)=>{
     const user = await contrUser.getById(id) as any
     const credito_residuo = user?.getDataValue('credito');
+   if(numeroFile ===1){
     const costo = 3*numeroFile
     const nuovo_credito = credito_residuo-costo
     await user.update({credito: nuovo_credito})
+   }else if(numeroFile===20){
+    const costo = 2.5*numeroFile
+    const nuovo_credito = credito_residuo-costo
+    await user.update({credito: nuovo_credito})
+   }
 }
   
 

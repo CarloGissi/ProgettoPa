@@ -9,7 +9,7 @@ router.get('/all',controller.getAll)
       .delete('/delete', middlex.controllo_token, middlex.isProprietario, controller.eliminaModelloById)
       .put('/update', middlex.controllo_token, middlex.isProprietario, controller.aggiornaModello)
       .get('/inferenza',controller.inferenza)
-      .get('/stato/:job', controller.ottieniStato)
+      .get('/stato/:job', middlex.controllo_token, middlex.isProprietario,controller.ottieniStato)
       .get('/risultato/:job', controller.ottieniRisultato)
 
 export default router

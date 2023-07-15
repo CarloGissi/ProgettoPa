@@ -192,7 +192,7 @@ const ricaricaCredito = async(req:Request, res:Response)=>{
 
 const ottieniCreditoByID = async(id: number)=>{
     const user = await User.findByPk(id)
-    const credito = user?.getDataValue('credito')
+    const credito = await user?.getDataValue('credito')
     return credito
 }
 

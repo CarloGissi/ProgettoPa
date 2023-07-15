@@ -148,41 +148,46 @@ const caricaImmagine = async (req:Request, res:Response) => {
             })
         }
         //verifichiamo il credito dell'utente che ha effettuato l'accesso ed è proprietario del dataset
+        if(await verificaCredito((req.params as any).uid, 1)){
             const storageEngine = multer.diskStorage({
                 destination:(req, file, callback)=>{
-                    callback(null, cartella_dataset)
-                },
-                filename:(req, file, callback)=>{
-                    const timestamp = Date.now()
-                    const filename = 'tmp_' + `${convertTimestampToString(timestamp)}`+ '_' + file.originalname
-                    callback(null, filename)
-                },
-            });
-
-        const caricamento = multer({
-            storage:storageEngine,
-            fileFilter: (req, file, callback)=>{
-            if (file.mimetype.startsWith('image/')){
-                callback(null,true);
-            }else{
-                callback(new Error('Non ci sono immagini'))
-            }  
-            }
-        })
-        //controlliamo che l'immagine sia stata caricata
-        caricamento.single('immagine')(req, res, async(err: any)=>{
-            if(err instanceof MulterError){
-                return res.status(StatusCodes.BAD_REQUEST).json(err)
-            }else if (err){
-                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err)
-            }
-            if(!(req.file instanceof Array) && !req.file){
-                return res.status(StatusCodes.BAD_REQUEST).json(err)
-            }else{
-                rimuvoiCredito((req.params as any).uid,1)
-                return res.status(StatusCodes.OK).json('il file è stato caricato')}
-            
-        })
+                     callback(null, cartella_dataset)
+                    },
+                    filename:(req, file, callback)=>{
+                        const timestamp = Date.now()
+                        const filename = 'tmp_' + `${convertTimestampToString(timestamp)}`+ '_' + file.originalname
+                        callback(null, filename)
+                    },
+                });
+    
+            const caricamento = multer({
+                storage:storageEngine,
+                fileFilter: (req, file, callback)=>{
+                if (file.mimetype.startsWith('image/')){
+                    callback(null,true);
+                }else{
+                    callback(new Error('Non ci sono immagini'))
+                }  
+                }
+            })
+            //controlliamo che l'immagine sia stata caricata
+            caricamento.single('immagine')(req, res, async(err: any)=>{
+                if(err instanceof MulterError){
+                    return res.status(StatusCodes.BAD_REQUEST).json(err)
+                }else if (err){
+                    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err)
+                }
+                if(!(req.file instanceof Array) && !req.file){
+                    return res.status(StatusCodes.BAD_REQUEST).json(err)
+                }else{
+                    rimuvoiCredito((req.params as any).uid,1)
+                    return res.status(StatusCodes.OK).json('il file è stato caricato')}
+                
+            })
+        }else{
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Credito insufficiente"})
+        }
+        
     }catch(error){
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
     }
@@ -288,7 +293,8 @@ const allVariable={
     getById,
     caricaImmagine,
     caricaVideo, 
-    rimuvoiCredito
+    rimuvoiCredito,
+    verificaCredito
 }
 
 export default allVariable

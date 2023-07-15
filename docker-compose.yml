@@ -34,14 +34,15 @@ services:
     container_name: postgres
     image: "postgres:12"
     ports:
-      - "5430:5430"
+      - "5432:5432"
     environment:
       - POSTGRES_DB=pa
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
       #- POSTGRES_HOST_AUTH_METHOD=trust
     volumes: 
-      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql        
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql      
+    restart: always  
 
   server:
     container_name: server
@@ -53,7 +54,7 @@ services:
     environment:
       - PORT=8080
       - PGDATABASE=pa
-      - PGPORT=5430
+      - PGPORT=5432
       - PGHOST=postgres
       - PGUSER=user
       - PGPASSWORD=password
@@ -61,3 +62,4 @@ services:
       - postgres
     volumes:
       - ./movenet.pytorch/data:/src/data
+    restart: always
