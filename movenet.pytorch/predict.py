@@ -29,14 +29,14 @@ def main(cfg):
     
     
     data = Data(cfg)
-    test_loader = data.getCostumTestDataloader("./data/images/img_1_1")
+    test_loader = data.getCostumTestDataloader('data/images/img_1_1')
 
 
     run_task = Task(cfg, model)
     #tracker = EmissionsTracker()
     #tracker.start()
     run_task.modelLoad("output/e120_valacc0.79633.pth")
-    folder_path = 'output/'+arg1+'_'+arg2+'/'
+    #folder_path = 'output/'+arg1+'_'+arg2+'/'
 
     #if not os.path.exists(folder_path):
      #   try:

@@ -15,6 +15,11 @@ services:
     depends_on:
       - rabbitmq
       - server
+    volumes:
+      - ./movenet.pytorch/output:/consumatore/output
+
+
+
   produttore:
     container_name: produttore
     build:
@@ -29,7 +34,7 @@ services:
     container_name: postgres
     image: "postgres:12"
     ports:
-      - "5432:5432"
+      - "5430:5430"
     environment:
       - POSTGRES_DB=pa
       - POSTGRES_USER=user
@@ -48,7 +53,7 @@ services:
     environment:
       - PORT=8080
       - PGDATABASE=pa
-      - PGPORT=5432
+      - PGPORT=5430
       - PGHOST=postgres
       - PGUSER=user
       - PGPASSWORD=password

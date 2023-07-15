@@ -106,26 +106,9 @@ const eliminaModelloById = async (req:Request, res: Response, next:NextFunction 
 //funzione che avvia un'inferennza e ottiene l'id del task come risposta
 const inferenza = async(req:Request, res: Response, next:NextFunction )=>{
     try{
-        const user = await contrUser.getById((req.params as any).userid)
-       if(user?.getDataValue('credito') >= 3){
-        const modello = await getById((req.query as any).id)
-        const idmodello = await modello?.getDataValue('id')
-        if(req.params.userid === await modello?.getDataValue('userid')){
-            const dataset = await contrDataset.getById((req.query as any).did)
-            const iddataset = await dataset?.getDataValue('id')
-            if(iddataset === await modello?.getDataValue('datasetid')){
-                const valore = await axios.get("http://produttore:5000/inferenza/"+iddataset+"/"+idmodello, {params: {}})
-                 await rimuvoiCredito((req.params as any).userid,1)
-                return res.status(StatusCodes.OK).json({id: valore.data.job_id}) 
-            }else{
-                return res.status(StatusCodes.BAD_REQUEST).json('Id del dataset errato, non corrisponde con quello del modello')
-            }
-       }else{
-        return res.status(StatusCodes.UNAUTHORIZED).json('Il tuo d non corrisponde con quello presente nel modello')
-       }
-        }else{
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json('Credito insufficiente')
-        }
+        const valore = await axios.get("http://produttore:5000/inferenza/"+1+"/"+1, {params: {}})
+        //await rimuvoiCredito((req.params as any).userid,1)
+        return res.status(StatusCodes.OK).json({id: valore.data.job_id}) 
     }catch(error){
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
     }
