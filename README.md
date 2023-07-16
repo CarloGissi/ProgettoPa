@@ -223,16 +223,16 @@ Body:
 
 Risposta:
 ```	                          
-	{
-        "id": 1,
-        "nome_utente": "rob",
-        "email": "rob@email.it",
-        "password": "carlo",
-        "admin": false,
-        "credito": 10,
-        "createdAt": "2023-07-16T09:45:09.687Z",
-        "updatedAt": "2023-07-16T09:45:09.687Z"
-    }
+{
+    "id": 1,
+    "nome_utente": "rob",
+    "email": "rob@email.it",
+    "password": "carlo",
+    "admin": false,
+    "credito": 10,
+    "createdAt": "2023-07-16T09:45:09.687Z",
+    "updatedAt": "2023-07-16T09:45:09.687Z"
+}
 ```
 
 <a name="4"></a>
@@ -250,16 +250,16 @@ Body:
 
 Risposta:
 ```	                          
-	{
-        "id": 1,
-        "nome_utente": "rob",
-        "email": "rob@email.it",
-        "password": "carlo",
-        "admin": false,
-        "credito": 10,
-        "createdAt": "2023-07-16T09:45:09.687Z",
-        "updatedAt": "2023-07-16T09:45:09.687Z"
-    }
+{
+    "id": 1,
+    "nome_utente": "rob",
+    "email": "rob@email.it",
+    "password": "carlo",
+    "admin": false,
+    "credito": 10,
+    "createdAt": "2023-07-16T09:45:09.687Z",
+    "updatedAt": "2023-07-16T09:45:09.687Z"
+}
 ```
 
 <a name="5"></a>
@@ -267,9 +267,9 @@ Risposta:
 
 Risposta:
 ```	                          
-	{
-        "msg": "utente eliminato."
-    }
+{
+    "msg": "utente eliminato."
+}
 ```
 
 <a name="6"></a>
@@ -277,27 +277,27 @@ Risposta:
 
 Risposta:
 ```	                          
-	{
-        "credito": 10
-    }
+{
+    "credito": 10
+}
 ```
 
 <a name="7"></a>
 ### 7. POST	/user/ricaricacredito?id=1
-#todo
 
 Body:
 ```	                          
-	{
-        "todo": 10
-    }
+{
+    "email": "rob@email.it",
+    "credito": 1
+}
 ```
 
 Risposta:
 ```	                          
-	{
-        "credito": 10
-    }
+{
+    "result": "Ricarica effettuata."
+}
 ```
 
 <a name="8"></a>
@@ -369,9 +369,9 @@ Risposta:
 
 Risposta:
 ```	                          
-	{
-        "msg": "modello eliminato."
-    }
+{
+    "msg": "modello eliminato."
+}
 ```
 
 <a name="12"></a>
@@ -379,9 +379,9 @@ Risposta:
 
 Risposta:
 ```	                          
-	{
-        "job_id": "sdjefjiofwe903r293r2239023jifij290fj32f0j23fj03f2ij"
-    }
+{
+    "job_id": "28635082-9ced-47e3-aac4-365212f57547"
+}
 ```
 
 <a name="13"></a>
@@ -389,21 +389,92 @@ Risposta:
 
 Risposta:
 ```	                          
-	{
-	    "job_id": "sdjefjiofwe903r293r2239023jifij290fj32f0j23fj03f2ij",
-        "stato": "SUCCESS"
-    }
+{
+    "job_id": "28635082-9ced-47e3-aac4-365212f57547",
+    "stato": "SUCCESS"
+}
 ```
 
 <a name="14"></a>
 ###  14. GET /model/risultato/:id
-#todo
+
 Risposta:
 ```	                          
-	{
-	    "job_id": "sdjefjiofwe903r293r2239023jifij290fj32f0j23fj03f2ij",
-        "result": []
-    }
+{
+    "id": "28635082-9ced-47e3-aac4-365212f57547",
+    "risultato": [
+        [
+            [
+                100,
+                68
+            ],
+            [
+                100,
+                63
+            ],
+            [
+                99,
+                64
+            ],
+            [
+                108,
+                61
+            ],
+            [
+                -192,
+                -192
+            ],
+            [
+                121,
+                76
+            ],
+            [
+                105,
+                77
+            ],
+            [
+                125,
+                101
+            ],
+            [
+                102,
+                101
+            ],
+            [
+                105,
+                112
+            ],
+            [
+                102,
+                110
+            ],
+            [
+                129,
+                109
+            ],
+            [
+                117,
+                105
+            ],
+            [
+                113,
+                117
+            ],
+            [
+                97,
+                117
+            ],
+            [
+                153,
+                149
+            ],
+            [
+                134,
+                137
+            ]
+        ]
+    ]
+}
 ```
 
 <a name="15"></a>
@@ -481,9 +552,9 @@ Risposta:
 
 Risposta:
 ```	                          
-	{
-        "msg": "dataset eliminato."
-    }
+{
+    "msg": "dataset eliminato."
+}
 ```
 
 <a name="19"></a>
@@ -491,16 +562,16 @@ Risposta:
 
 Body:
 ```	                          
-	{
-        "immagine": "img.jpg"
-    }
+{
+    "immagine": "img.jpg"
+}
 ```
 
 Risposta:
 ```	                          
-	{
-        "msg": "Immagine caricata correttamente."
-    }
+{
+    "msg": "Immagine caricata correttamente."
+}
 ```
 
 <a name="20"></a>
@@ -508,16 +579,16 @@ Risposta:
 
 Body:
 ```	                          
-	{
-        "video": "video.mp4"
-    }
+{
+    "video": "video.mp4"
+}
 ```
 
 Risposta:
 ```	                          
-	{
-        "msg": "Video caricato correttamente."
-    }
+{
+    "msg": "Video caricato correttamente."
+}
 ```
 
 <a name="software"></a>
