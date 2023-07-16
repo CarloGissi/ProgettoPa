@@ -21,7 +21,6 @@ def main(cfg):
 
     init(cfg)
     arg1= sys.argv[1]
-    arg2 = sys.argv[2]
 
     model = MoveNet(num_classes=cfg["num_classes"],
                     width_mult=cfg["width_mult"],
@@ -29,7 +28,13 @@ def main(cfg):
     
     
     data = Data(cfg)
-    test_loader = data.getCostumTestDataloader('data/images/img_1_1')
+    if(arg1 == 0):
+      test_loader = data.getCostumTestDataloader('./data/images/img_1_1')
+    elif(arg1 == 1) :
+      test_loader = data.getCostumTestDataloader('./data/video/v_1_1/frame')
+    else:
+      test_loader = data.getCostumTestDataloader('./data/test')
+      
 
 
     run_task = Task(cfg, model)

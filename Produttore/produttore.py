@@ -2,15 +2,20 @@ from celery.result import AsyncResult
 from celery import Celery
 from flask import Flask
 from flask import jsonify
+import os
 
+
+PORT = os.environ.get("Q_PORT") or 5672
+USER = os.environ.get("RABBIT_USER") or "guest"
+PASS = os.environ.get("RABBIT_PASSWORD") or "guest"
 # Crea un'istanza di Celery e specifica il broker RabbitMQ
 app = Celery('app', broker='amqp://guest:guest@rabbitmq:5672//', backend='rpc://')
 
 flask = Flask(__name__)
 
-@flask.route('/inferenza/<dataset>/<modello>')
-def inferenza(dataset, modello):
-    result = app.send_task('app.inferenza', kwargs={'dataset':dataset, 'modello':modello})
+@flask.route('/inferenza/<tipo>')
+def inferenza(tipo):
+    result = app.send_task('app.inferenza', kwargs={'tipo':tipo})
     result_id = result.id
 
     response = {
