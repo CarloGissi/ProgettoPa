@@ -1,3 +1,5 @@
+//interfaccia e classi utilizzate per sostituire/o integrare la libreria status-code
+
 interface IErrorMsg{
     stampaMex():string;
 }

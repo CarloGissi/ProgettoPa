@@ -3,7 +3,7 @@ import * as  yup from 'yup'
 import {StatusCodes} from 'http-status-codes'
 import User from '../Model/user'
 import jwt from 'jsonwebtoken'
-import prova from '../Factory/FactoryError'
+import { STATUS_CODES } from 'http'
 
 //creato schema per fare l'accesso
 const accesSchema = yup.object({
@@ -51,11 +51,11 @@ const newUser = async (req:Request, res: Response, next:NextFunction ) => {
                 const NEW_USER = await User.create(modello_user)
                 return res.status(StatusCodes.CREATED).json(NEW_USER)
                 }catch(error){
-                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Ritentare"})
                 }
         }
        }catch(error){
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Ritentare"})
        }
 } 
 
@@ -67,7 +67,7 @@ const getAll = async(req:Request, res:Response, next:NextFunction)=>{
         const ALL = await User.findAll()
         return res.status(StatusCodes.OK).json(ALL)
     }catch(error){
-        //return response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Ritentare"})
     }
 }
 
@@ -88,16 +88,16 @@ const login = async(req: Request, res:Response)=>{
             if(us){
                 if((await valore).password===us?.getDataValue('password')){
                     const token = jwt.sign({id: us?.get("id") }, process.env.KEY || 'ciao', { expiresIn: "1h" })
-                    return res.json(token)
+                    return res.json({result:token})
                 }else{
-                    res.status(StatusCodes.UNAUTHORIZED).json("Password errata")
+                    res.status(StatusCodes.UNAUTHORIZED).json({error:"Password errata"})
                 }
             }else{
-                res.status(StatusCodes.NOT_FOUND).json("Utente non presente")
+                res.status(StatusCodes.NOT_FOUND).json({error:"Utente non presente"})
             }
         }        
     }catch(error){
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Ritentare"})
     }
 
 }
@@ -117,14 +117,14 @@ const aggiornaUtente = async(req: Request, res:Response)=>{
                     password: (await valore).password
                 }
                 const user_agg = await User.update(modelloUser, {where: {id: req.query.id}})
-                return res.status(StatusCodes.OK).json('Utente aggiornato')
+                return res.status(StatusCodes.OK).json({result:'Utente aggiornato'})
             }
         }else{
-            return res.status(StatusCodes.NOT_FOUND).json('Utente non presente')
+            return res.status(StatusCodes.NOT_FOUND).json({result:'Utente non presente'})
         }
 
     }catch(error){
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Ritentare"})
 
     }
 }
@@ -135,12 +135,12 @@ const eliminaUserById = async (req:Request, res: Response, next:NextFunction ) =
         const user = await User.findOne({where: {id: req.query.id}})
         if(user){
             const OLD_USER = await User.destroy({where:{id: req.query.id}})
-            return res.status(StatusCodes.CREATED).json(OLD_USER)
+            return res.status(StatusCodes.CREATED).json({result: "Utente eliminato"})
         }else{
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json("L'utente non è presente")
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "L'utente non è presente"})
         }
     }catch(error){
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Ritentare"})
     }  
 }
 
@@ -150,12 +150,12 @@ const ottieniCredito =async (req: Request, res:Response, next:NextFunction) => {
         const us = await User.findOne({where:{id: (req as any).params.id}})
         if(us){
             const credito_residuo = us.getDataValue('credito')
-            return res.status(StatusCodes.OK).json(credito_residuo)
+            return res.status(StatusCodes.OK).json({credito: credito_residuo})
         }else{
-            return res.json("L'utente non esiste")
+            return res.status(StatusCodes.BAD_REQUEST).json({error:"L'utente non esiste"})
         }
     }catch(error){
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Ritentare"})
     }
 }
 
@@ -171,18 +171,18 @@ const ricaricaCredito = async(req:Request, res:Response)=>{
             if(utente){
                 const credito_residuo = utente.getDataValue('credito')
                 if(credito_residuo===1000){
-                    return res.json("Il credito è massimo")
+                    return res.status(StatusCodes.BAD_REQUEST).json({error: "Il credito è massimo"})
                 }else{
                     const somma = nuovo_credito + credito_residuo
                     if(somma >1000){
-                        return res.json("Il credito inserito supera il limite")
+                        return res.status(StatusCodes.BAD_REQUEST).json({error:"Il credito inserito supera il limite"})
                     }else{
                         await utente.update({credito: somma})
-                        return res.status(StatusCodes.OK).json("Ricarica effettuata")
+                        return res.status(StatusCodes.OK).json({result:"Ricarica effettuata"})
                     }
                 }
             }else{
-                return res.json("L'utente non esiste")
+                return res.json({error:"L'utente non esiste"})
             }
         }
     }catch(error){

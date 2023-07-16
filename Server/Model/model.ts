@@ -18,7 +18,8 @@ const Model = sequelize.define("models",{
     },
     datasetid:{
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        unique:true
     },
     userid:{
         type:INTEGER,

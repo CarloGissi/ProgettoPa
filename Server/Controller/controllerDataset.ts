@@ -1,4 +1,4 @@
-import { Response, Request, NextFunction, response } from "express";
+import { Response, Request, NextFunction } from "express";
 import Dataset  from "../Model/dataset";
 import { StatusCodes } from "http-status-codes";
 import * as yup from 'yup'
@@ -48,16 +48,16 @@ const newDataset = async (req:Request, res: Response, next:NextFunction ) => {
             const NEW_DATASET = await Dataset.create(modello_dataset)
             return res.status(StatusCodes.CREATED).json(NEW_DATASET)
          }catch(error){
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Ritenta"})
          }
     }catch(error){
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Ritenta"})
     }  
 }
 
 
 //funzione per aggioranre un ndataset in base all'id
-const aggiornaDataset = async(req: Request, res:Response)=>{
+const aggiornaDataset = async(req: Request, res:Response, next:NextFunction)=>{
     try{
         const presente = await Dataset.findOne({where: {id: req.query.id}})
         if(presente){
@@ -70,14 +70,14 @@ const aggiornaDataset = async(req: Request, res:Response)=>{
                         tags : (await valore).tags
                 }
                 const dataset_agg = await Dataset.update(modello_dataset, {where: {id: req.query.id}})
-                return res.status(StatusCodes.OK).json('Dataset aggiornato')
+                return res.status(StatusCodes.OK).json({result:'Dataset aggiornato'})
                 }
         }else{
-            return res.status(StatusCodes.NOT_FOUND).json('Dataset non presente')
+            return res.status(StatusCodes.NOT_FOUND).json({error:'Dataset non presente, inserire id corretto'})
         }
 
     }catch(error){
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error:"Ritenta"})
 
     }
 }
@@ -94,12 +94,12 @@ const eliminaDatasetById = async (req:Request, res: Response, next:NextFunction 
         const dataset = await Dataset.findOne({where: {id: req.query.id}})
         if(dataset){
             const OLD_DATASET = await Dataset.destroy({where:{id: req.query.id}})
-            return res.status(StatusCodes.CREATED).json(OLD_DATASET)
+            return res.status(StatusCodes.CREATED).json({stato: "dataset eliminato"})
         }else{
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json("Il dataset non è presente")
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error:"Il dataset non è presente"})
         }
     }catch(error){
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Ritenta"})
     }  
 }
 
@@ -173,15 +173,15 @@ const caricaImmagine = async (req:Request, res:Response) => {
             //controlliamo che l'immagine sia stata caricata
             caricamento.single('immagine')(req, res, async(err: any)=>{
                 if(err instanceof MulterError){
-                    return res.status(StatusCodes.BAD_REQUEST).json(err)
+                    return res.status(StatusCodes.BAD_REQUEST).json({err:"Inserimento non avvenuto: attendi..."})
                 }else if (err){
                     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err)
                 }
                 if(!(req.file instanceof Array) && !req.file){
-                    return res.status(StatusCodes.BAD_REQUEST).json(err)
+                    return res.status(StatusCodes.BAD_REQUEST).json({err:"Inserimento non avvenuto: errore"})
                 }else{
                     rimuvoiCredito((req.params as any).uid,1)
-                    return res.status(StatusCodes.OK).json('il file è stato caricato')}
+                    return res.status(StatusCodes.OK).json({stato:'il file è stato caricato'})}
                 
             })
         }else{
@@ -189,7 +189,7 @@ const caricaImmagine = async (req:Request, res:Response) => {
         }
         
     }catch(error){
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error:"Ritenta"})
     }
 };
 
@@ -234,19 +234,19 @@ const caricaVideo = async (req:Request, res:Response) => {
         //controlliamo che il video sia stato caricato
             caricamento.single('video')(req, res, async(err: any)=>{
                 if(err instanceof MulterError){
-                    return res.status(StatusCodes.BAD_REQUEST).json(err)
+                    return res.status(StatusCodes.BAD_REQUEST).json({error:"Richiesta errata"})
                 }else if (err){
-                    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err)
+                    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error:"Ritenta"})
                 }
                 if(!(req.file instanceof Array) && !req.file){
-                    return res.status(StatusCodes.BAD_REQUEST).json(err)
+                    return res.status(StatusCodes.BAD_REQUEST).json({error:"Ritenta"})
                 }else{
                     //creiamo se non esiste la cartella dove saranno contenuti i frame
                     const cartella_frame = cartella_dataset + '/'+'frame/'//+req.params.filename.slice(0,-4)
                     if(!fs.existsSync(cartella_frame)){
                         await fs.mkdir(cartella_frame, {recursive:true}, err =>{
                             if(err){
-                                return res.status(StatusCodes.NOT_FOUND).json(err)
+                                return res.status(StatusCodes.NOT_FOUND).json({error:"Ritenta"})
                             }
                         })
                     }
@@ -266,7 +266,7 @@ const caricaVideo = async (req:Request, res:Response) => {
                     })
                     //rimuoviamo i crediti in base ai frame che abbiamo
                     await rimuvoiCredito((req.params as any).uid,20)
-                    return res.status(StatusCodes.OK).json("Il file è stato caricato");
+                    return res.status(StatusCodes.OK).json({stato:'il file è stato caricato'});
 
                 }
                 
@@ -275,7 +275,7 @@ const caricaVideo = async (req:Request, res:Response) => {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Credito insufficiente"})
     }
     }catch(error){
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error:"Ritenta"})
     }
 };
 

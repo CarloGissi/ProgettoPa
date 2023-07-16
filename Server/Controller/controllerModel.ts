@@ -49,11 +49,11 @@ const newModel = async (req:Request, res: Response, next:NextFunction ) => {
                 const newModel = await Model.create(modelloModel)
                 return res.status(StatusCodes.CREATED).json(newModel)
             }catch(error){
-                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Ritenta" })
             }
         }
     }catch(error){
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Ritenta" })
     }  
 }
 //funzione che aggiorna il modello
@@ -70,14 +70,14 @@ const aggiornaModello = async(req: Request, res:Response)=>{
                         datsetid : (await valore).datasetid
                     }
                     const model_agg = await Model.update(modello_model, {where: {id: req.query.id}})
-                    return res.status(StatusCodes.OK).json('Modello aggiornato')   
+                    return res.status(StatusCodes.OK).json({stato: 'Modello aggiornato'})   
                         }
         }else{
-            return res.status(StatusCodes.NOT_FOUND).json('Modello non presente')
+            return res.status(StatusCodes.NOT_FOUND).json({error: 'Modello non presente'})
         }
 
     }catch(error){
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Ritenta"})
 
     }
 }
@@ -94,12 +94,12 @@ const eliminaModelloById = async (req:Request, res: Response, next:NextFunction 
         const modello = await Model.findOne({where: {id: req.query.id}})
         if(modello){
             const OLD_MODEL = await Model.destroy({where:{id: req.query.id}})
-            return res.status(StatusCodes.CREATED).json(OLD_MODEL)
+            return res.status(StatusCodes.CREATED).json({result: "Modello eliminato"})
         }else{
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json("Il modello non è presente")
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error:"Il modello non è presente"})
         }
     }catch(error){
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Ritenta"})
     }  
 }
 
@@ -107,7 +107,7 @@ const eliminaModelloById = async (req:Request, res: Response, next:NextFunction 
 const inferenza = async(req:Request, res: Response, next:NextFunction )=>{
     try{
         if(!req.body || Object.keys(req.body).length === 0 || Object.keys(req.body).length === 1 || Object.keys(req.body).length === 2 || Object.keys(req.body).length === 3){
-            res.status(StatusCodes.BAD_REQUEST).json("Metti qualcosa")
+            res.status(StatusCodes.BAD_REQUEST).json({error:"Completa il body"})
         }
         const tipo = req.body.tipo
         const userid=req.body.userid
@@ -128,10 +128,10 @@ const inferenza = async(req:Request, res: Response, next:NextFunction )=>{
                 return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Credito insufficiente"})
             }
         }else {
-            return res.status(StatusCodes.BAD_REQUEST).json({error: "Inserisci il tipo"})
+            return res.status(StatusCodes.BAD_REQUEST).json({error: "Inserisci correttamente il tipo"})
         }
     }catch(error){
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Ritenta"})
     }
 }
 

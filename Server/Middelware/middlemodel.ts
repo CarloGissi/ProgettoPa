@@ -2,16 +2,17 @@ import jwt from 'jsonwebtoken'
 import {Request, Response, NextFunction} from 'express'
 import {StatusCodes} from 'http-status-codes'
 import allVariable from '../Controller/controllerModel'
+import prova from '../Factory/FactoryError'
 
 const controllo_token = async (req: any, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     if (token == null){
-        return res.sendStatus(401);
+        return res.status(StatusCodes.UNAUTHORIZED).json({error:prova.getErrore(401).stampaMex()});
     }else{
         jwt.verify(token, process.env.KEY as string || "ciao", (err: any) => {
         if (err){
-            return res.sendStatus(403);  
+            return res.status(StatusCodes.FORBIDDEN).json({error:"Token errato"});  
         }else{
             const check : any = jwt.verify(token, process.env.KEY as string || "ciao");
             (req as any).params.userid = check.id

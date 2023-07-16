@@ -2,16 +2,17 @@ import jwt from 'jsonwebtoken'
 import {Request, Response, NextFunction} from 'express'
 import controllerUser from '../Controller/controllerUser'
 import {StatusCodes} from 'http-status-codes'
+import prova from '../Factory/FactoryError'
 
 const controllo_token = async (req: any, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     if (token == null){
-        return res.sendStatus(401);
+        return res.status(StatusCodes.UNAUTHORIZED).json({error:prova.getErrore(401).stampaMex()});
     }else{
         jwt.verify(token, process.env.KEY as string || "ciao", (err: any) => {
         if (err){
-            return res.sendStatus(403);  
+            return res.status(StatusCodes.FORBIDDEN).json({error:"Token errato"});   
         }else{
             const check : any = jwt.verify(token, process.env.KEY as string || "ciao");
             (req as any).params.id = check.id
@@ -29,7 +30,7 @@ const controllo_admin = async (request: Request, response: Response, next: NextF
     if (USER?.get("admin") === true) {
         next()
     } else {
-        response.status(StatusCodes.UNAUTHORIZED).send("Unauthorized")
+        response.status(StatusCodes.UNAUTHORIZED).json({error: prova.getErrore(401).stampaMex()})
     }
 }
 
@@ -47,11 +48,11 @@ const isProprietario = async (req: Request, res: Response, next: NextFunction) =
             next()
         } else {
             res.status(StatusCodes.FORBIDDEN).json({
-                message: "Non sei l'utente autorizzato."
+                message: "Non sei il proprietario."
             })
         }
     } catch (error) {
-        return res.status(StatusCodes.BAD_REQUEST).json({ message: error })
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: "Ritentare" })
     }
 }
 
@@ -62,7 +63,7 @@ const controllo_crediti = async (request: Request, response: Response, next: Nex
         if (crediti >=11){
             next()
         } else {
-            response.status(StatusCodes.UNAUTHORIZED).send({ message: 'Crediti non sufficienti.' })
+            response.status(StatusCodes.UNAUTHORIZED).send({erro: prova.getErrore(401).stampaMex() })
         } 
     }else if((request.query as any).tipo === 1){
         if (crediti >= (0.05*20)){
