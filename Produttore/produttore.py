@@ -13,9 +13,9 @@ app = Celery('app', broker='amqp://guest:guest@rabbitmq:5672//', backend='rpc://
 
 flask = Flask(__name__)
 
-@flask.route('/inferenza/<tipo>')
-def inferenza(tipo):
-    result = app.send_task('app.inferenza', kwargs={'tipo':tipo})
+@flask.route('/inferenza/<userid>/<dataset>/<tipo>')
+def inferenza(userid,dataset,tipo):
+    result = app.send_task('app.inferenza', kwargs={'userid':userid, 'dataset':dataset, 'tipo':tipo})
     result_id = result.id
 
     response = {

@@ -111,9 +111,10 @@ const inferenza = async(req:Request, res: Response, next:NextFunction )=>{
         }
         const tipo = req.body.tipo
         const userid=req.body.userid
-        if(tipo===0){
+        const did = req.body.did
+        if(tipo=="0"){
             if(await verificaCredito(userid, 1)){
-                const valore = await axios.get("http://produttore:5000/inferenza/0", {params: {}})
+                const valore = await axios.get("http://produttore:5000/inferenza/"+userid.toString()+"/"+did.toString()+"/"+tipo.toString(), {params: {}})
                 await rimuvoiCredito(userid,1)
                 return res.status(StatusCodes.OK).json({id: valore.data.job_id})
             }else{
@@ -121,8 +122,8 @@ const inferenza = async(req:Request, res: Response, next:NextFunction )=>{
             }
         }else if(tipo==1){
             if(await verificaCredito(userid, 20)){
-                const valore = await axios.get("http://produttore:5000/inferenza/1", {params: {}})
-                await rimuvoiCredito(userid,1)
+                const valore = await axios.get("http://produttore:5000/inferenza/"+userid.toString()+"/"+did.toString()+"/"+tipo.toString(), {params: {}})
+                await rimuvoiCredito(userid,20)
                 return res.status(StatusCodes.OK).json({id: valore.data.job_id})
             }else{
                 return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Credito insufficiente"})
