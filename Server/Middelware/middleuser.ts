@@ -55,10 +55,28 @@ const isProprietario = async (req: Request, res: Response, next: NextFunction) =
     }
 }
 
+// Controllo dei crediti di un'utente  per il caricamento dei files
+const controllo_crediti = async (request: Request, response: Response, next: NextFunction) => {
+    const crediti = await controllerUser.ottieniCreditoByID((request.params as any).uid)
+    if((request.query as any).tipo === 0){
+        if (crediti >=11){
+            next()
+        } else {
+            response.status(StatusCodes.UNAUTHORIZED).send({ message: 'Crediti non sufficienti.' })
+        } 
+    }else if((request.query as any).tipo === 1){
+        if (crediti >= (0.05*20)){
+            next()
+        } else {
+            response.status(StatusCodes.UNAUTHORIZED).send({ message: 'Crediti non sufficienti.' })
+        } 
+    }
+}
 
 const middlex = {
     controllo_token,
     controllo_admin,
-    isProprietario
+    isProprietario,
+    controllo_crediti
 }
 export default middlex

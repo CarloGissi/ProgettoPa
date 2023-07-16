@@ -8,15 +8,18 @@ services:
     environment:
       - RABBIT_USER=guest
       - RABBIT_PASS=guest
+
+
   consumatore:
     container_name: consumatore
     build:
       context: movenet.pytorch
     depends_on:
       - rabbitmq
-      - server
     volumes:
-      - ./movenet.pytorch/output:/consumatore/output
+      - ./movenet.pytorch:/consumatore
+    environment:
+      - Q_PORT=5672
 
 
 
@@ -28,6 +31,9 @@ services:
       - "3002:5000"
     depends_on:
       - rabbitmq
+      - consumatore
+    environment:
+      - Q_PORT=5672
 
 
   postgres:
@@ -58,8 +64,10 @@ services:
       - PGHOST=postgres
       - PGUSER=user
       - PGPASSWORD=password
+      - FPORT=5000
     depends_on:
       - postgres
+      - consumatore
     volumes:
       - ./movenet.pytorch/data:/src/data
     restart: always

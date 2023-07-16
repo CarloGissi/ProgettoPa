@@ -105,7 +105,7 @@ const eliminaDatasetById = async (req:Request, res: Response, next:NextFunction 
 
 const verificaCredito = async(id: number, numeroFile: number)=>{
     const user = await controllerUser.getById(id) as any
-    const credito = user?.getDataValue('credito');
+    const credito =  user?.getDataValue('credito');
     if(credito > 0.05 * numeroFile){
         return true
     }else{
@@ -242,7 +242,7 @@ const caricaVideo = async (req:Request, res:Response) => {
                     return res.status(StatusCodes.BAD_REQUEST).json(err)
                 }else{
                     //creiamo se non esiste la cartella dove saranno contenuti i frame
-                    const cartella_frame = cartella_dataset + '/'+'frame/'+req.params.filename.slice(0,-4)
+                    const cartella_frame = cartella_dataset + '/'+'frame/'//+req.params.filename.slice(0,-4)
                     if(!fs.existsSync(cartella_frame)){
                         await fs.mkdir(cartella_frame, {recursive:true}, err =>{
                             if(err){

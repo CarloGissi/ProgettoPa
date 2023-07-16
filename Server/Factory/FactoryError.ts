@@ -40,8 +40,11 @@ class ErrorMessaggio {
             case ErroriEn.OK:
                 variabile= new StatusOK();
                 break;
-            case ErroriEn.OK:
-                variabile= new StatusOK();
+            case ErroriEn.UNH:
+                variabile= new NonAutorizzato();
+                break;
+            case ErroriEn.NOTF:
+                variabile= new ClientErrorNotFound();
                 break;
         }
         return variabile

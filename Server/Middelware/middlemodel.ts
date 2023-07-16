@@ -22,7 +22,7 @@ const controllo_token = async (req: any, res: Response, next: NextFunction) => {
   }
 
 const isProprietario = async (req: Request, res: Response, next: NextFunction) => {
-    const modelloID = (req as any).query.id
+    const modelloID = req.body.id
     try {
         const modello = await allVariable.getById(parseInt(modelloID))
         if (!modello) {

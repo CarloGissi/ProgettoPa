@@ -106,18 +106,23 @@ const eliminaModelloById = async (req:Request, res: Response, next:NextFunction 
 //funzione che avvia un'inferennza e ottiene l'id del task come risposta
 const inferenza = async(req:Request, res: Response, next:NextFunction )=>{
     try{
-        if((req.query as any).tipo==0){
-            if(await contrDataset.verificaCredito((req.params as any).userid, 1)){
-                const valore = await axios.get("http://produttore:5000/inferenza/"+1+"/"+1, {params: {}})
-                await rimuvoiCredito((req.params as any).userid,1)
+        if(!req.body || Object.keys(req.body).length === 0 || Object.keys(req.body).length === 1 || Object.keys(req.body).length === 2 || Object.keys(req.body).length === 3){
+            res.status(StatusCodes.BAD_REQUEST).json("Metti qualcosa")
+        }
+        const tipo = req.body.tipo
+        const userid=req.body.userid
+        if(tipo===0){
+            if(await verificaCredito(userid, 1)){
+                const valore = await axios.get("http://produttore:5000/inferenza/0", {params: {}})
+                await rimuvoiCredito(userid,1)
                 return res.status(StatusCodes.OK).json({id: valore.data.job_id})
             }else{
                 return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Credito insufficiente"})
             }
-        }else if((req.query as any).tipo==1){
-            if(await contrDataset.verificaCredito((req.params as any).userid, 20)){
-                const valore = await axios.get("http://produttore:5000/inferenza/"+1+"/"+1, {params: {}})
-                await rimuvoiCredito((req.params as any).userid,1)
+        }else if(tipo==1){
+            if(await verificaCredito(userid, 20)){
+                const valore = await axios.get("http://produttore:5000/inferenza/1", {params: {}})
+                await rimuvoiCredito(userid,1)
                 return res.status(StatusCodes.OK).json({id: valore.data.job_id})
             }else{
                 return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Credito insufficiente"})
@@ -127,6 +132,16 @@ const inferenza = async(req:Request, res: Response, next:NextFunction )=>{
         }
     }catch(error){
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+    }
+}
+
+const verificaCredito = async(id: number, numeroFile: number)=>{
+    const user = await contrUser.getById(id) as any
+    const credito = await user?.getDataValue('credito');
+    if(credito > 3 * numeroFile){
+        return true
+    }else{
+        return false
     }
 }
 //funzione per ottenere lo stato
