@@ -1,6 +1,6 @@
-CREATE DATABASE progetto_pa;--MODIFICA NOME
+CREATE DATABASE prog_pa;--MODIFICA NOME
 
-CREATE TABLE IF NOT EXISTS public."users_id_seq"
+CREATE TABLE IF NOT EXISTS public."users"
 (
     id integer NOT NULL GENERATED ALWAYS AS NUMERO ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 100),
     nome_utente text  NOT NULL,
@@ -14,11 +14,11 @@ CREATE TABLE IF NOT EXISTS public."users_id_seq"
 );
 
 
-ALTER TABLE IF EXISTS public."users_id_seq"
+ALTER TABLE IF EXISTS public."users"
     OWNER to "user";
 
 
-CREATE TABLE IF NOT EXISTS public."datasets_id_seq"
+CREATE TABLE IF NOT EXISTS public."datasets"
 (
     id integer NOT NULL GENERATED ALWAYS AS NUMERO ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 100 ),
     nome text NOT NULL,
@@ -33,11 +33,11 @@ CREATE TABLE IF NOT EXISTS public."datasets_id_seq"
         ON DELETE CASCADE
 );
 
-ALTER TABLE IF EXISTS public.datasets
+ALTER TABLE IF EXISTS public."datasets"
     OWNER to "user";
 
 
-CREATE TABLE IF NOT EXISTS public."model_id_seq"
+CREATE TABLE IF NOT EXISTS public."models"
 (
     id integer NOT NULL GENERATED ALWAYS AS NUMERO ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 100 ),
     nome text NOT NULL UNIQUE,
@@ -49,5 +49,5 @@ CREATE TABLE IF NOT EXISTS public."model_id_seq"
 );
 
 
-ALTER TABLE IF EXISTS public.model
+ALTER TABLE IF EXISTS public."models"
     OWNER to "user";

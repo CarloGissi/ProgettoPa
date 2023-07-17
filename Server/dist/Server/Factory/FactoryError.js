@@ -13,7 +13,7 @@ class NonAutorizzato {
 }
 class ClientErrorNotFound {
     stampaMex() {
-        return "l'utente non è autorizzato";
+        return "Error";
     }
 }
 class ErroGenerico {
