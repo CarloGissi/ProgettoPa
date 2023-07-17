@@ -406,7 +406,7 @@ Risposta:
 ```
 
 <a name="14"></a>
-###  14. GET /model/risultato/:id
+###  14. POST /model/risultato/:id
 
 Risposta:
 ```	                          
