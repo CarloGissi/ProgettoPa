@@ -375,7 +375,7 @@ Risposta:
 ```
 
 <a name="12"></a>
-###  12. GET /model/inferenza
+###  12. POST /model/inferenza
 
 Body: 
 ```json
@@ -406,7 +406,7 @@ Risposta:
 ```
 
 <a name="14"></a>
-###  14. POST /model/risultato/:id
+###  14. GET /model/risultato/:id
 
 Risposta:
 ```	                          
