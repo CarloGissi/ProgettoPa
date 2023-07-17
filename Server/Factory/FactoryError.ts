@@ -18,7 +18,7 @@ class NonAutorizzato implements IErrorMsg{
 
 class ClientErrorNotFound implements IErrorMsg{
     stampaMex() :string{
-        return "l'utente non è autorizzato";
+        return "Error";
     }
 }
 

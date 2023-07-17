@@ -1,63 +1,53 @@
-CREATE DATABASE pa;
+CREATE DATABASE progetto_pa;--MODIFICA NOME
 
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS models;
-DROP TABLE IF EXISTS datasets;
-
-CREATE TABLE users (
-  id integer SERIAL PRIMARY KEY NOT NULL,
-  nome_utente varchar(30) NOT NULL UNIQUE,
-  email varchar(30) NOT NULL UNIQUE,
-  password varchar(30) NOT NULL,
-  admin boolean NOT NULL,
-  credito FLOAT(2,2) DEFAULT 10 NOT NULL,
-  PRIMARY KEY (id)
+CREATE TABLE IF NOT EXISTS public."users_id_seq"
+(
+    id integer NOT NULL GENERATED ALWAYS AS NUMERO ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 100),
+    nome_utente text  NOT NULL,
+    email text  NOT NULL UNIQUE,
+    password text  NOT NULL,
+    credito decimal(5,2) NOT NULL DEFAULT 10,
+    admin boolean NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP DEFAULT NULL,
+    "updatedAt" TIMESTAMP DEFAULT NULL,
+    CONSTRAINT user_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE datasets (
-  deletedAt DATE default NULL NOT NULL
-  id integer SERIAL PRIMARY KEY NOT NULL,
-  nome varchar(30) NOT NULL UNIQUE,
-  tags varchar(30) NOT NULL,
-  uid integer NOT NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT userid FOREIGN KEY(id)
-    REFERENCES public."users" (id) MATCH SIMPLE
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
+
+ALTER TABLE IF EXISTS public."users_id_seq"
+    OWNER to "user";
+
+
+CREATE TABLE IF NOT EXISTS public."datasets_id_seq"
+(
+    id integer NOT NULL GENERATED ALWAYS AS NUMERO ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 100 ),
+    nome text NOT NULL,
+    tags text NOT NULL,
+    "uid" integer NOT NULL,
+    "createdAt" TIMESTAMP DEFAULT NULL,
+    "updatedAt" TIMESTAMP DEFAULT NULL,
+    CONSTRAINT dataset_pkey PRIMARY KEY (id),
+    CONSTRAINT user_id FOREIGN KEY ("uid")
+        REFERENCES public."user" (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
-CREATE TABLE models (
-  id integer SERIAL PRIMARY KEY NOT NULL,
-  nome varchar(30) NOT NULL,
-  datasetid integer NOT NULL,
-  userid integer NOT NULL,
-  PRIMARY KEY (id)
-  CONSTRAINT userid_datasetid_unique UNIQUE (userid, datasetid),
-  CONSTRAINT userid FOREIGN KEY(id)
-    REFERENCES public."users" (id) MATCH SIMPLE
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
-  CONSTRAINT datasetid FOREIGN KEY(id)
-    REFERENCES public."datasets" (id) MATCH SIMPLE
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
-  
+ALTER TABLE IF EXISTS public.datasets
+    OWNER to "user";
+
+
+CREATE TABLE IF NOT EXISTS public."model_id_seq"
+(
+    id integer NOT NULL GENERATED ALWAYS AS NUMERO ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 100 ),
+    nome text NOT NULL UNIQUE,
+    "userid" integer NOT NULL,
+    "datasetid" integer NOT NULL ,
+    "createdAt" TIMESTAMP DEFAULT NULL,
+    "updatedAt" TIMESTAMP DEFAULT NULL,
+    CONSTRAINT model_pkey PRIMARY KEY (id)
 );
 
--- Rimuovi l'attributo "deletedAt" dalla tabella "models"
---ALTER TABLE models
---DROP COLUMN deletedAt;
 
--- Aggiungi l'attributo "deletedAt" alla tabella "datasets"
---ALTER TABLE datasets
---ADD COLUMN deletedAt DATE DEFAULT NULL;
-
-
--- Inserisci un nuovo utente nella tabella "users"
-INSERT INTO users (
-  nome_utente, email, password, admin, credito)
-    VALUES ('carlo', 'carlo@carlo.com', 'carlo', true, 10.0);
-
-
-
+ALTER TABLE IF EXISTS public.model
+    OWNER to "user";
