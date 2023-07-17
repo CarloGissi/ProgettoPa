@@ -123,12 +123,12 @@ git clone https://github.com/CarloGissi/ProgettoPa
 docker-compose up --build
 ```
 
-Questo comando avvierà i servizi specificati nel Docker Compose, compreso il server RabbitMQ, l'applicazione Flask, il server Node e PostgreSQL.
+Questo comando avvierà tutti i servizi specificati nel Docker Compose necessari per avviare l'applicazione.
 
 5. L'applicazione è in ascolto all'indirizzo `http://localhost:8080`.
 
 ### Utilizzo di Postman
-Per facilitare l'utilizzo di rotte predefinite puoi utilizzare [Postman](https://www.postman.com/) per richiamare le API ed eseguire le richieste. Ti basta scaricarlo e importare i file che sono presenti qui.
+Per facilitare l'utilizzo di rotte predefinite puoi utilizzare [Postman](https://www.postman.com/) per richiamare le API ed eseguire le richieste. Ti basta scaricarlo e importare i file che sono presenti [qui](https://github.com/CarloGissi/ProgettoPa/tree/master/Collection).
 
 <a name="rotte"></a>
 #  Rotte
@@ -147,11 +147,11 @@ N° | Tipo | Rotta | TOKEN JWT
 [9](#9) | ` POST ` | `/model/new` | *NO*
 [10](#10) | ` PUT ` | `/model/update?id=<id>` | *SI*
 [11](#11) | ` DELETE ` | `/model/delete?id=<id>` | *SI*
-[12](#12) | ` GET ` | `/model/inferenza?id=<id>&did=<did>&tipo=<x>` | *SI*
+[12](#12) | ` POST ` | `/model/inferenza` | *SI*
 [13](#13) | ` GET ` | `/model/stato/:job` | *SI*
 [14](#14) | ` GET ` | `/model/risultato/:job` | *SI*
 [15](#15) | ` GET ` | `/dataset/all` | *NO*
-[16](#16) | ` POST ` | `/dataset/new` | *NO*
+[16](#16) | ` POST ` | `/dataset/new` | *SI*
 [17](#17) | ` PUT ` | `/dataset/update?id=<id>` | *SI*
 [18](#18) | ` DELETE ` | `/dataset/delete?id=<id>` | *SI*
 [19](#19) | ` POST ` | `/dataset/caricafile?id=<id>` | *SI*
@@ -375,7 +375,17 @@ Risposta:
 ```
 
 <a name="12"></a>
-###  12. GET /model/inferenza?id=id&did=did&tipo=0
+###  12. GET /model/inferenza
+
+Body: 
+```json
+{
+    "id": 1,
+    "userid": 1,
+    "did": 1,
+    "tipo": 0
+}
+```
 
 Risposta:
 ```	                          
